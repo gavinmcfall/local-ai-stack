@@ -86,9 +86,9 @@ If you do not already have git setup you will need to follow these steps
     ```
     Hi username! You've successfully authenticated, but GitHub does not provide shell access.
     ```
-1.  Go to the local-ai-stack git repo: https://github.com/churchcommunitybuilder/pony-prompt
+1.  Go to the local-ai-stack git repo: https://github.com/gavinmcfall/local-ai-stack
 1.  Copy the SSH git git command
-    1.  Click the Green `Code` button
+    1.  Click the Blue `Code` button
     1.  Click on SSH
     1.  Click the copy icon
     ![Git Clone](docs/src/assets/git-clone.png)
