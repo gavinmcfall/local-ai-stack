@@ -1,0 +1,202 @@
+model_list:
+
+# --------------------------------------------
+# ---------- Locally Hosted Models -----------
+# --------------------------------------------
+
+  # Note: Cold start on these models can take upwards of 15s, after which they perform well.
+
+  # 🧠 LOCAL CHAT MODEL - Great for general conversation and dev experiments
+  - model_name: ollama/llama3:8b
+    litellm_params:
+      model: ollama/llama3:8b
+      api_base: http://host.docker.internal:11434 # MacOS or Windows
+    # api_base: http://<your-host-IP>:11434 # Linux
+    model_info:
+      id: ollama/llama3:8b
+      mode: completion
+      max_tokens: 8192 # Estimated context window for 8B models
+
+  # 🔍 LOCAL EMBEDDING MODEL - For semantic search, RAG, and vector indexing
+  - model_name: ollama/nomic-embed-text
+    litellm_params:
+      model: ollama/nomic-embed-text
+      api_base: http://host.docker.internal:11434 # MacOS or Windows
+    # api_base: http://<your-host-IP>:11434 # Linux
+    model_info:
+      id: ollama/nomic-embed-text
+      mode: embedding
+      max_tokens: 512 # Conservative estimate
+
+# --------------------------------------------
+# ------------ AWS Bedrock Models ------------
+# --------------------------------------------
+
+
+  # 🤖 CHAT ‑ Claude 3 Sonnet (balanced)
+  - model_name: Bedrock · Claude 3 Sonnet
+    litellm_params:
+      model: "bedrock/anthropic.claude-3-sonnet-20240229-v1:0"
+    model_info:
+      id: anthropic.claude-3-sonnet-20240229-v1:0
+      mode: completion
+      input_cost_per_token: 0.000003     # $0.003 / 1 000
+      output_cost_per_token: 0.000015    # $0.015 / 1 000
+      max_tokens: 200000
+
+  # 🧠 CHAT ‑ Claude 3.5 Sonnet v2 (premium)
+  - model_name: Bedrock · Claude 3.5 Sonnet v2
+    litellm_params:
+      model: "bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0"
+    model_info:
+      id: anthropic.claude-3-5-sonnet-20241022-v2:0
+      mode: completion
+      input_cost_per_token: 0.000003     # $0.003 / 1 000
+      output_cost_per_token: 0.000015    # $0.015 / 1 000
+      max_tokens: 200000
+
+  # 💬 CHAT ‑ Mixtral 8×7B Instruct
+  - model_name: Bedrock · Mixtral 8x7B Instruct
+    provider: bedrock
+    litellm_params:
+      model: bedrock/mistral.mixtral-8x7b-instruct-v0:1
+    model_info:
+      id: mistral.mixtral-8x7b-instruct-v0:1
+      mode: completion
+      input_cost_per_token:  0.00000045   # $0.00045 / 1 000
+      output_cost_per_token: 0.00000070   # $0.00070 / 1 000
+      max_tokens: 32000
+
+  # 🇬🇧 EMBEDDING ‑ English
+  - model_name: Bedrock · Embed English (base)
+    provider: bedrock
+    litellm_params:
+      model: bedrock/cohere.embed-english-v3
+    model_info:
+      id: cohere.embed-english-v3
+      mode: embedding
+      input_cost_per_token: 0.00000010  # $0.00010 / 1 000
+      output_cost_per_token: 0  # Embeds are input only
+      max_tokens: 512
+
+  # 🌍 EMBEDDING ‑ Multilingual
+  - model_name: Bedrock · Embed Multilingual (base)
+    provider: bedrock
+    litellm_params:
+      model: cohere.embed-multilingual-v3
+    model_info:
+      id: cohere.embed-multilingual-v3
+      mode: embedding
+      input_cost_per_token: 0.00000010  # $0.00010 / 1 000
+      output_cost_per_token: 0  # Embeds are input only
+      max_tokens: 512
+
+  # 🔊 TTS ‑ Nova Sonic
+  - model_name: Bedrock · Nova Sonic (Audio)
+    provider: bedrock
+    litellm_params:
+      model: bedrock/amazon.nova-sonic-v1:0
+      region_name: us-east-1
+    model_info:
+      id: amazon.nova-sonic-v1:0
+      mode: audio
+    # ──────────── pricing ────────────
+    # AWS price sheet (us‑east‑1, May‑2025):
+    #   ▸ $0.00006  per 1K  *text*  input tokens  (TTS prompt)
+    #   ▸ $0.0136   per 1K  *speech* output tokens (≈ per‑second audio)
+    # Convert to per‑token & per‑second:
+    input_cost_per_token:  0.00000006    # $0.00006 / 1 000
+    output_cost_per_second: 0.0136       # Bedrock bills per‑second for TTS audio
+    max_tokens:        
+
+  # 🖼️ IMAGE ‑ Nova Canvas
+  - model_name: Bedrock · Nova Canvas (Image)
+    provider: bedrock
+    litellm_params:
+      model: bedrock/amazon.nova-canvas-v1:0
+      region_name: us-east-1
+    model_info:
+      id: amazon.nova-canvas-v1:0
+      mode: image_generation
+    # AWS on‑demand price: $0.018 per image generated
+    output_cost_per_image: 0.018
+    input_cost_per_pixel: 0              # prompt is free
+    max_tokens:         
+
+  # 🎥 VIDEO ‑ Nova Reel
+  - model_name: Bedrock · Nova Reel (Video)
+    provider: bedrock
+    litellm_params:
+      model: bedrock/amazon.nova-reel-v1:0
+      region_name: us-east-1
+    model_info:
+      id: amazon.nova-reel-v1:0
+      mode: video             
+    # AWS price: $0.08 per second of 720p 24 fps video generated
+    output_cost_per_second: 0.08
+    max_tokens:
+
+
+# --------------------------------------------
+# ----------- Google Gemini Models -----------
+# --------------------------------------------
+
+  - model_name: "Google: gemini-1.5-flash"
+    provider: google
+    litellm_params:
+      model: gemini/gemini-1.5-flash
+    api_key: ${PP_GOOGLE_API_KEY}
+    model_info:
+      id: gemini-1.5-flash
+      mode: completion
+      input_cost_per_token: 0.00000035  # USD $0.35 per million tokens (input)
+      output_cost_per_token: 0.00000150  # USD $1.50 per million tokens (output)
+      max_tokens: 1048576  # 1 million tokens
+
+  - model_name: "Google: gemini-2.0-flash"
+    provider: google
+    litellm_params:
+      model: gemini/gemini-2.0-flash
+    api_key: ${PP_GOOGLE_API_KEY}
+    model_info:
+      id: gemini-2.0-flash
+      mode: completion
+      input_cost_per_token: 0.00000035  # USD $0.35 per million tokens (input)
+      output_cost_per_token: 0.00000150  # USD $1.50 per million tokens (output)
+      max_tokens: 1048576  # 1 million tokens
+
+  # - model_name: "Google: gemini-2.5-flash"
+  #   provider: google
+  #   litellm_params:
+  #     model: gemini/gemini-2.5-flash
+  #   api_key: ${PP_GOOGLE_API_KEY}
+  #   model_info:
+  #     id: gemini-2.5-flash
+  #     mode: completion
+  #     input_cost_per_token: 0.00000035  # USD $0.35 per million tokens (input)
+  #     output_cost_per_token: 0.00000150  # USD $1.50 per million tokens (output)
+  #     max_tokens: 1048576  # 1 million tokens
+
+  # - model_name: "Google: gemini-1.5-pro"
+  #   provider: google
+  #   litellm_params:
+  #     model: gemini/gemini-1.5-pro
+  #   api_key: ${GEMINI_API_KEY}
+  #   model_info:
+  #     id: gemini-1.5-pro
+  #     mode: completion
+  #     input_cost_per_token: 0.00000125  # USD $1.25 per million tokens (input)
+  #     output_cost_per_token: 0.00000500  # USD $5.00 per million tokens (output)
+  #     max_tokens: 2097152  # 2 million tokens
+
+  # - model_name: "Google: gemini-2.5-pro"
+  #   provider: google
+  #   litellm_params:
+  #     model: gemini/gemini-2.5-pro
+  #   api_key: ${PP_GOOGLE_API_KEY}
+  #   model_info:
+  #     id: gemini-2.5-pro
+  #     mode: completion
+  #     input_cost_per_token: 0.00000125  # USD $1.25 per million tokens (input)
+  #     output_cost_per_token: 0.00000500  # USD $5.00 per million tokens (output)
+  #     max_tokens: 2097152  # 2 million tokens

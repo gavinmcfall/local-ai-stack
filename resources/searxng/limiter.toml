@@ -1,0 +1,18 @@
+[real_ip]
+x_for = 0
+ipv4_prefix = 32
+ipv6_prefix = 48
+
+[botdetection.ip_limit]
+filter_link_local = false
+link_token = false
+
+[botdetection.ip_lists]
+block_ip = []
+
+pass_ip = [
+  "127.0.0.1/32",  # only allow loopback access
+  "::1/128"        # IPv6 loopback
+]
+
+pass_searxng_org = false

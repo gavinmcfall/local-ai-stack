@@ -1,0 +1,26 @@
+use_default_settings: true
+
+server:
+  limiter: true
+  image_proxy: false
+  method: GET
+  public_instance: false
+
+search:
+  default_lang: en
+  languages:
+    - en
+  formats:
+    - json
+  autocomplete: null
+
+general:
+  instance_name: "RAG Search"
+  enable_metrics: false
+
+enabled_plugins: []
+
+engines:
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
